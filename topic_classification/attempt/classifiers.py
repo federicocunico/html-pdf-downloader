@@ -24,6 +24,7 @@ def bayes(X_train, y_train, X_test, y_test, labels, bow=True):
 
     print('accuracy %s' % accuracy_score(y_pred, y_test))
     print(classification_report(y_test, y_pred, target_names=my_tags))
+    return nb
 
 
 def svm(X_train, y_train, X_test, y_test, my_tags, bow=True):
@@ -43,6 +44,7 @@ def svm(X_train, y_train, X_test, y_test, my_tags, bow=True):
 
     print('accuracy %s' % accuracy_score(y_pred, y_test))
     print(classification_report(y_test, y_pred, target_names=my_tags))
+    return sgd
 
 
 def logistic_regressor(X_train, y_train, X_test, y_test, my_tags, bow=True):
@@ -62,3 +64,4 @@ def logistic_regressor(X_train, y_train, X_test, y_test, my_tags, bow=True):
 
     print('accuracy %s' % accuracy_score(y_pred, y_test))
     print(classification_report(y_test, y_pred, target_names=my_tags))
+    return logreg

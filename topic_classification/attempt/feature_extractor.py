@@ -36,7 +36,7 @@ def get20News():
 
 
 print('Loading data from 20NewsGroup')
-print('=' * 50)
+print('=' * 100)
 X, labels, labelToName, nTokens = get20News()
 
 # sorting
@@ -50,7 +50,7 @@ print(f'Labels: {labels.shape}')
 print(f'Number of classes: {numClasses}')
 print(f'Classes: {np.asarray(namesInLabelOrder).reshape(-1, 1)}')
 
-use_bow = False
+use_bow = True
 if use_bow:
     # Reshape X data into NxM, with N = docs, M = words
     X = np.array([np.array(xi) for xi in X])  # rows: Docs. columns: words
@@ -75,17 +75,61 @@ print('List of classification tests')
 
 print('Naive Bayes Classifier for Multinomial Models')
 print('=' * 100)
-bayes(train_x, train_labels, test_x, test_labels, namesInLabelOrder, use_bow)
-
+bayes_clf = bayes(train_x, train_labels, test_x, test_labels, namesInLabelOrder, use_bow)
 
 print('Linear Support Vector Machine')
 print('=' * 100)
-svm(train_x, train_labels, test_x, test_labels, namesInLabelOrder, use_bow)
+svm_clf = svm(train_x, train_labels, test_x, test_labels, namesInLabelOrder, use_bow)
+
+# print('Logistic Regressor')
+# print('=' * 100)
+# log_regr_clf = logistic_regressor(train_x, train_labels, test_x, test_labels, namesInLabelOrder, use_bow)
 
 
-print('Logistic Regressor')
-print('=' * 100)
-logistic_regressor(train_x, train_labels, test_x, test_labels, namesInLabelOrder, use_bow)
+# Testing
+# padding = [''] * 107195
+# x_test = np.array([['extrapersonal'] + padding])
 
+def test(words, classifier):
+    # x_test = np.array([[s for s in word.split(' ')]])
+    token = tokenize(words)
+    x_test = np.array([token])  # [N,M] where N is number of lines, and M is the
+    test_encoded = vectorizer.transform(x_test)
+    y_pred = classifier.predict(test_encoded)
+    print(f'Word: {x_test} was assigned {namesInLabelOrder[y_pred[0]]}')
+
+
+print('= ' * 50)
+print('Testing words for bayes')
+test('extrapersonal', bayes_clf)
+test('intraspersonal', bayes_clf)
+test('sociology', bayes_clf)
+test('idiosyncratic', bayes_clf)
+test('Subject to a practicable definition of meaning it can be stated '
+     'right from the outset that meaning is neither an individuals '
+     'subjective state of mind nor an intrapersonal process nor an '
+     'objective attribute of something in the extrapersonal environment', bayes_clf)
+
+print('\n\n' + '= ' * 50)
+print('Testing words for SVM')
+test('extrapersonal', svm_clf)
+test('intraspersonal', svm_clf)
+test('sociology', svm_clf)
+test('idiosyncratic', svm_clf)
+test('Subject to a practicable definition of meaning it can be stated '
+     'right from the outset that meaning is neither an individuals '
+     'subjective state of mind nor an intrapersonal process nor an '
+     'objective attribute of something in the extrapersonal environment', svm_clf)
+
+# print('\n\n' + '= ' * 50)
+# print('Testing words for Logistic Classifier')
+# test('extrapersonal', log_regr_clf)
+# test('intraspersonal', log_regr_clf)
+# test('sociology', log_regr_clf)
+# test('idiosyncratic', log_regr_clf)
+# test('Subject to a practicable definition of meaning it can be stated '
+#      'right from the outset that meaning is neither an individuals '
+#      'subjective state of mind nor an intrapersonal process nor an '
+#      'objective attribute of something in the extrapersonal environment', log_regr_clf)
 
 print('End of program')
